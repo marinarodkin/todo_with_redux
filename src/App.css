@@ -1,0 +1,110 @@
+@import url('https://fonts.googleapis.com/css?family=Roboto');
+
+.App {
+    text-align: left;
+    width: 400px;
+    max-height: 600px;
+    border: 2px solid #30d5c8;
+    margin-left: 100px;
+    margin-top: 50px;
+    padding-bottom: 20px;
+    font-family: 'Roboto', sans-serif;
+    font-size: 14px;
+    border-radius: 5px;
+
+}
+
+.header {
+    padding: 1px 20px;
+    background-color: #30d5c8;
+    font-size: 25px;
+    font-style: italic;
+    margin-bottom: 5px;
+}
+
+.form {
+    margin-left: 10px;
+    margin-bottom: 10px;
+    padding: 15px;
+}
+
+.task {
+    margin-left: 10px;
+    margin-bottom: 10px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.task-button {
+    margin-right: 5px;
+    border: none;
+    background-color: white;
+    cursor: pointer;
+}
+
+.input-task {
+    border: none;
+    outline: none;
+    width: 70%;
+    font-style: italic;
+    border-bottom: 1px solid #30d5c8;
+}
+
+.task-button {
+    width: 20px;
+    height: 20px;
+    background-position: center;
+    background-size: cover;
+    margin-right: 15px;
+}
+
+.task-button_edit {
+    background-image: url('./img/edit.png');
+}
+
+.task-button_delete {
+    background-image: url('./img/trash.png');
+}
+
+.task-check {
+    display: none;
+}
+
+.task-label {
+    margin-left: 50px;
+    position: relative;
+}
+
+.task-label_through{
+    margin-left: 50px;
+    position: relative;
+    text-decoration: line-through;
+    color: grey;
+}
+
+.task-label::before {
+    position: absolute;
+    display: block;
+    content: '';
+    width: 20px;
+    height: 20px;
+    left: -40px;
+    top: -2px;
+    border: 1px solid #30d5c8;
+    border-radius: 3px;
+
+}
+.task-label_through::before {
+    position: absolute;
+    display: block;
+    width: 20px;
+    height: 20px;
+    left: -40px;
+    top: -2px;
+    border: 1px solid #30d5c8;
+    border-radius: 3px;
+    content: '✓';
+    font-size: 20px;
+    text-align: center;
+}
+
