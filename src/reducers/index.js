@@ -17,7 +17,7 @@ const initialApp = {
 function rdcApp(state = initialApp, action) {
     switch (action.type) {
         case act.ADD_NEW_TASK:
-            return {...state }
+            return {...state, action.payload }
         case act.ADD_EDITED_TASK:
             return {...state }
         case act.DELETE_TASK:
