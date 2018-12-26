@@ -3,67 +3,73 @@ import TodoForm from './components/TodoForm';
 import TodoList from './components/TodoList';
 import './App.css';
 import uuidv4 from 'uuid/v4';
-import { connect } from 'react-redux'
+import { connect } from 'react-redux';
+import {actDeleteTask} from "./reducers/actions_creators.js"
+
 
 
 
 class App extends Component {
 
     state = {
-        tasks: [{content: 'Read 30 pages from the book', done: false, index: 1, id: uuidv4()},
-            {content: 'Write a letter', done: false, index: 2, id: uuidv4()},
-            {content: 'Prepare for tomorrow', done: true, index: 3, id: uuidv4()}
+        tasks: [{content: 'Read 30 pages from the book', done: false, id: uuidv4(), isEdited: false},
+            {content: 'Write a letter', done: false, id: uuidv4(), isEdited: false},
+            {content: 'Prepare for tomorrow', done: true, id: uuidv4(), isEdited: false}
         ],
         text: '',
-        currentIndex: 3
+
     };
 
-    constructor(props) {
-        super(props);
-        // создание ссылки для хранения DOM-элемента textInput
-        this.textInput = React.createRef();
-
-    }
-
-    onChange = ({target: {value}}) => {
+    onChangeInputValue = ({target: {value}}) => {
         this.setState({
             text: value
         })
     }
 
-    onClick = ({target: {id}}) => {
+    setToDoDone = ({target: {id}}) => {
         const tasksCopy = [...this.state.tasks];
-        const clickedTask = tasksCopy.find((item => item.index == id))
-        const updatedTask = {content: clickedTask.content, done: !clickedTask.done, index: clickedTask.index, id: clickedTask.id};
-        this.setState(prevState => ({tasks: [...prevState.tasks.filter(item => item.index != id),updatedTask ]}) )
+        const clickedTaskIndex = tasksCopy.findIndex((item => item.id === id))
+        tasksCopy[clickedTaskIndex].done = !tasksCopy[clickedTaskIndex].done;
+        this.setState(prevState => ({...prevState, tasks: tasksCopy }) )
     }
 
-    onSubmitForm = (e) => {
-        e.preventDefault();
-        const index = this.state.currentIndex;
-        const newTask = {content: this.state.text, done: false, index: index + 1, id: uuidv4()};
+    addNewTask = () => {
+        if (this.state.text === "") return;
+        const newTask = {content: this.state.text, done: false, id: uuidv4()};
         this.setState(prevState => ({
-            tasks: [...prevState.tasks, newTask],
+            tasks: [newTask, ...prevState.tasks],
             text: '',
-            currentIndex: prevState.currentIndex + 1
         }));
     }
 
-    deleteTask = (e) => {
-        e.preventDefault();
-        const id = e.target.parentNode.previousSibling.firstChild.id;
-        this.setState(prevState => ({ tasks: prevState.tasks.filter(item => item.index != id) }))
+    onDeleteTask = (id) => {
+        this.setState(prevState => ({ tasks: prevState.tasks.filter(item => item.id !== id) }))
     }
 
-    editTask = (e) => {
-        e.preventDefault();
-        const id = e.target.parentNode.previousSibling.firstChild.id;
+    startEditing = (id) => {
         const tasksCopy = [...this.state.tasks];
-        const clickedTask = tasksCopy.find(item => item.index == id);
-        const updatedContent = clickedTask.content;
-        this.textInput.current.focus();
-        this.setState(prevState => ({ tasks: prevState.tasks.filter(item => item.index != id), text: updatedContent }))
+        const clickedTaskIndex = tasksCopy.findIndex((item => item.id === id));
+        tasksCopy[clickedTaskIndex].isEdited = !tasksCopy[clickedTaskIndex].isEdited;
+        const content = tasksCopy[clickedTaskIndex].content;
+        this.setState(prevState => ({...prevState,
+            text: content,
+            tasks: tasksCopy }));
     }
+
+    finishEditing = (id) => {
+        if (this.state.text === "") return;
+        const tasksCopy = [...this.state.tasks];
+        const clickedTaskIndex = tasksCopy.findIndex((item => item.id === id));
+        tasksCopy[clickedTaskIndex].content = this.state.text;
+        tasksCopy[clickedTaskIndex].isEdited = !tasksCopy[clickedTaskIndex].isEdited;
+        this.setState(prevState => ({...prevState,
+            text: "",
+            tasks: tasksCopy,
+            contentToEdit: ""}));
+    }
+
+
+
 
     render() {
         return (
@@ -71,9 +77,9 @@ class App extends Component {
                 <div className='header'>
                     <p className='header-title'>To do list</p>
                 </div>
-                <TodoForm onSubmitForm={this.onSubmitForm} onChange={this.onChange} text={this.state.text} textInput = {this.textInput}/>
-                <TodoList tasks={this.state.tasks} deleteTask={this.deleteTask} editTask={this.editTask}
-                          onClick={this.onClick}/>
+                <TodoForm addNewTask={this.addNewTask} tasks = {this.state.tasks} onChangeInputValue={this.onChangeInputValue} text={this.state.text} />
+                <TodoList tasks={this.state.tasks} onDeleteTask={this.onDeleteTask} onEditTask={this.onEditTask}
+                          setToDoDone={this.setToDoDone}  startEditing={this.startEditing} finishEditing={this.finishEditing} onChangeInputValue={this.onChangeInputValue} text={this.state.text}/>
             </div>
         );
     }
@@ -89,6 +95,7 @@ const mapStateToProps = store => {
 
 const mapDispatchToProps = dispatch => {
     return {
+        actDeleteTask: payload => dispatch(actDeleteTask(payload))
 
     }
 }

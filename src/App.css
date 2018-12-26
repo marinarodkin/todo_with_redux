@@ -108,3 +108,12 @@
     text-align: center;
 }
 
+.edit-form{
+    margin-left: 50px;
+
+}
+
+.task-button_done {
+    background-image: url('./img/plus.png');
+    margin-left: 50px;
+}
