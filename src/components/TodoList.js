@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import '../App.css';
 import { connect } from 'react-redux'
-
+import {actSetToDoDone, actStartEditing, actFinishEditing, actDeleteTask, actChangeInputValue} from "./../reducers/actions_creators.js"
 
 class TodoList extends Component {
     labelStyle(item) {
@@ -10,22 +10,26 @@ class TodoList extends Component {
 
     onDelete = (id) => (event) => {
         event.preventDefault(event);
-        this.props.onDeleteTask(id)
+        this.props.actDeleteTask(id)
     }
 
     startEditing = (id) => (event) => {
         event.preventDefault(event);
-        this.props.startEditing(id)
+        this.props.actStartEditing(id)
     }
 
     finishEditing= (id) => (event) => {
         event.preventDefault(event);
-        this.props.finishEditing(id)
+        this.props.actFinishEditing(id)
     }
 
+    setToDoDone = (e) => {
+        const id = e.target.id;
+        this.props.actSetToDoDone(id);
+    }
 
     render() {
-        const tasksCopy  = [...this.props.tasks];
+        const tasksCopy  = [...this.props.app.tasks];
         return (
             <div className="tasks">
                 <form>
@@ -35,8 +39,8 @@ class TodoList extends Component {
                                 <form onSubmit = {this.finishEditing(item.id)} >
                                     <input className = 'input-task'
                                            type = "text"
-                                           value = {this.props.text}
-                                           onChange = {this.props.onChangeInputValue}
+                                           value = {this.props.app.text}
+                                           onChange = {this.props.actChangeInputValue}
                                            placeholder = {item.content}
                                            autoFocus = {true}
                                            ref = {this.props.textInput}
@@ -54,7 +58,7 @@ class TodoList extends Component {
                                         type = 'checkbox'
                                         id = {item.id}
                                         checked = {item.done}
-                                        onChange = {this.props.setToDoDone}
+                                        onChange = {this.setToDoDone}
                                     />
                                     {item.content}
                                 </label>
@@ -81,7 +85,11 @@ const mapStateToProps = store => {
 
 const mapDispatchToProps = dispatch => {
     return {
-
+        actDeleteTask: payload => dispatch(actDeleteTask(payload)),
+        actStartEditing: payload => dispatch( actStartEditing(payload)),
+        actFinishEditing: payload => dispatch(actFinishEditing(payload)),
+        actSetToDoDone: payload => dispatch(actSetToDoDone(payload)),
+        actChangeInputValue: payload => dispatch( actChangeInputValue(payload))
     }
 }
 

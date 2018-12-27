@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux'
 import '../App.css';
+import {actAddNewTask, actChangeInputValue} from "./../reducers/actions_creators.js"
 
 class TodoForm extends Component {
     addNewTask  = (event) => {
         event.preventDefault(event);
-        this.props.addNewTask();
+        this.props.actAddNewTask();
     }
     render() {
 
@@ -14,8 +15,8 @@ class TodoForm extends Component {
                 <form onSubmit={this.addNewTask} >
                     <input className = 'input-task'
                            type = "text"
-                           value = {this.props.tasks.findIndex(item => item.isEdited === true) === -1 ? this.props.text : ''}
-                           onChange = {this.props.onChangeInputValue}
+                           value = {this.props.app.tasks.findIndex(item => item.isEdited === true) === -1 ? this.props.app.text : ''}
+                           onChange = {this.props.actChangeInputValue}
                            placeholder = 'Добавьте новое задание'
                            autoFocus = {true}
                            ref = {this.props.textInput}
@@ -39,8 +40,9 @@ const mapStateToProps = store => {
 
 const mapDispatchToProps = dispatch => {
     return {
-
-    }
+       actAddNewTask: payload => dispatch(actAddNewTask(payload)),
+        actChangeInputValue: payload => dispatch( actChangeInputValue(payload))
+         }
 }
 
 
